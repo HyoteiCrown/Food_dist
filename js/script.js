@@ -174,32 +174,52 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  new MenuCard(
-    "Меню Фитнес",
-    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    9,
-    "img/tabs/vegy.jpg",
-    "vegy",
-    ".menu .container"
-  ).render();
+  const getResource = async (url) => {
+    const result = await fetch(url);
 
-  new MenuCard(
-    "Меню Премиум",
-    "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
-    15,
-    "img/tabs/elite.jpg",
-    "elite",
-    ".menu .container"
-  ).render();
+    if (!result.ok) {
+      throw new Error(`Fetching ${url} failed, error: ${result.status}`);
+    }
 
-  new MenuCard(
-    "Меню Постное",
-    "Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
-    11,
-    "img/tabs/post.jpg",
-    "post",
-    ".menu .container"
-  ).render();
+    return await result.json();
+  };
+
+  getResource("http://localhost:3000/menu").then((data) => {
+    data.forEach(({ title, descr, price, img, altimg }) => {
+      new MenuCard(
+        title,
+        descr,
+        price,
+        img,
+        altimg,
+        ".menu .container"
+      ).render();
+    });
+  });
+
+  // getResource("http://localhost:3000/menu")
+  //  .then((data => {
+  //   function createCard(data){
+  //     data.forEach(({ title, descr, price, img, altimg }) => {
+  //       const element = document.createElement("div");
+  //       element.classList.add("menu__item");
+  //       const titleElement = document.createElement("h3");
+  //       titleElement.textContent = title;
+  //       const descrElement = document.createElement("div");
+  //       descrElement.textContent = descr;
+  //       const priceElement = document.createElement("div");
+  //       priceElement.textContent = `цена: ${price} руб/день`;
+  //       const imgElement = document.createElement("img");
+  //       imgElement.src = img;
+  //       imgElement.alt = altimg;
+
+  //       element.append(titleElement, descrElement, priceElement, imgElement);
+  //       document.querySelector(".menu .container").append(element);
+  //     });
+  //   }
+  //   createCard(data);
+  // })
+  //  )
 
   //forms
 
@@ -212,54 +232,56 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   forms.forEach((item) => {
-    postData(item);
+    bindPostData(item);
   });
 
-  function postData(form) {
+  const postData = async (url, data) => {
+    const result = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: data,
+    });
+
+    return await result.json();
+  };
+
+  function bindPostData(form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-  
+
       const statusMessage = document.createElement("img");
       statusMessage.src = message.loading;
-      statusMessage.style.cssText=`
+      statusMessage.style.cssText = `
         display: block;
         margin: 0 auto;
-      `
-      form.insertAdjacentElement('afterend', statusMessage);
-  
-        
-      
-      const formData = new FormData(form);
-  
-      const object = {};
-      formData.forEach(function (value, key) {
-        object[key] = value;
-      });
-  
+      `;
+      form.insertAdjacentElement("afterend", statusMessage);
 
-      fetch('server.php', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body:JSON.stringify(object)
-        }).then(data=>data.text())
-        .then(data =>{
+      const formData = new FormData(form);
+
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+      postData("http://localhost:3000/requests", json)
+        .then((data) => {
           console.log(data);
           showThanksModal(message.success);
           statusMessage.remove();
-        }).catch(() => {
-          showThanksModal(message.failure);
-        }).finally(() => {
-          form.reset();
         })
-  });
+        .catch(() => {
+          showThanksModal(message.failure);
+        })
+        .finally(() => {
+          form.reset();
+        });
+    });
   }
 
   function showThanksModal(message) {
     const prevModalDialog = document.querySelector(".modal__dialog");
     prevModalDialog.classList.add("hide");
-  
+
     const modalDialog = document.createElement("div");
     modalDialog.classList.add("modal__dialog");
     modalDialog.classList.add("show");
@@ -270,9 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="modal__title">${message}</div>
       </div>
     `;
-  
+
     document.querySelector(".modal").append(modalDialog);
-  
+
     setTimeout(() => {
       modalDialog.remove();
       prevModalDialog.classList.add("show");
@@ -280,16 +302,8 @@ document.addEventListener("DOMContentLoaded", () => {
       closeModal();
     }, 4000);
   }
-  
-  fetch('http://localhost:3000/menu')
-   .then(data => data.json())
-   .then(res => console.log(res));
-   
+
+  fetch("http://localhost:3000/menu")
+    .then((data) => data.json())
+    .then((res) => console.log(res));
 });
-
-
-
-
-
-
-
