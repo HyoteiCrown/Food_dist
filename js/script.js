@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   tabs( '.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
   cards();
   calc();
-  forms('.form', modalTimerID);
+  forms('.modal form', modalTimerID);
   slider({
     container: ".offer__slider",
     slide: ".offer__slide",

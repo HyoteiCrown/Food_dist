@@ -254,7 +254,7 @@ function forms(formSelector, modalTimerID) {
   const forms = document.querySelectorAll(formSelector);
 
   const message = {
-    loading: "img/form/spinner.svg",
+    loading: "img/form/5.2 spinner.svg",
     success: "Спасибо! Мы скоро свяжемся с вами.",
     failure: "Что-то пошло не так...",
   };
@@ -842,7 +842,7 @@ document.addEventListener("DOMContentLoaded", () => {
   (0,_modules_tabs_js__WEBPACK_IMPORTED_MODULE_0__["default"])( '.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
   (0,_modules_cards_js__WEBPACK_IMPORTED_MODULE_1__["default"])();
   (0,_modules_calc_js__WEBPACK_IMPORTED_MODULE_2__["default"])();
-  (0,_modules_forms_js__WEBPACK_IMPORTED_MODULE_3__["default"])('.form', modalTimerID);
+  (0,_modules_forms_js__WEBPACK_IMPORTED_MODULE_3__["default"])('.modal form', modalTimerID);
   (0,_modules_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"])({
     container: ".offer__slider",
     slide: ".offer__slide",

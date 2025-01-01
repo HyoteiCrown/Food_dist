@@ -6,7 +6,7 @@ function forms(formSelector, modalTimerID) {
   const forms = document.querySelectorAll(formSelector);
 
   const message = {
-    loading: "img/form/spinner.svg",
+    loading: "img/form/5.2 spinner.svg",
     success: "Спасибо! Мы скоро свяжемся с вами.",
     failure: "Что-то пошло не так...",
   };
